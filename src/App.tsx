@@ -3,6 +3,7 @@ import { useState } from "react";
 interface Todo {
   id: number;
   todo: string;
+  complete: boolean;
 }
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
     const newTodo = {
       id: Date.now(),
       todo,
+      complete: false,
     };
     setData([...data, newTodo]);
     setTodo("");
@@ -26,10 +28,16 @@ function App() {
     setTodo(input);
   }
 
+  const onBtnDeleteHandle = (id: number) => {
+    const updatedData = data.filter((todos) => id !== todos.id);
+
+    setData(updatedData);
+  };
+
   return (
     <div className="container">
       <InputField userTodo={userTodo} onBtnSubmitHandle={onBtnSubmitHandle} />
-      <UserTodos todos={data} />
+      <UserTodos todos={data} onBtnDeleteHandle={onBtnDeleteHandle} />
     </div>
   );
 }
@@ -68,9 +76,10 @@ const InputField: React.FC<InputFieldProps> = ({
 
 interface UserTodosProps {
   todos: Todo[];
+  onBtnDeleteHandle: (id: number) => void;
 }
 
-const UserTodos: React.FC<UserTodosProps> = ({ todos }) => {
+const UserTodos: React.FC<UserTodosProps> = ({ todos, onBtnDeleteHandle }) => {
   return (
     <div className="UsersTodos">
       <h1>LIST</h1>
@@ -78,7 +87,7 @@ const UserTodos: React.FC<UserTodosProps> = ({ todos }) => {
         {todos.map((item) => (
           <div key={item.id}>
             <li>{item.todo}</li>
-            <button>delete</button>
+            <button onClick={() => onBtnDeleteHandle(item.id)}>delete</button>
           </div>
         ))}
       </ul>
